@@ -1,0 +1,43 @@
+name: DevSecOps Security Pipeline
+
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install bandit safety
+    
+    # Static Application Security Testing (SAST)
+    - name: Run Bandit
+      run: bandit -r ./src -f custom
+    
+    # Dependency Scanning
+    - name: Check for known vulnerabilities
+      run: safety check
+    
+    # Run Tests
+    - name: Run pytest
+      run: pytest tests/
+
+
+
+

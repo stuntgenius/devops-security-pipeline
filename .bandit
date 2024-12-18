@@ -1,0 +1,4 @@
+[bandit]
+skips: B101
+recursive: true
+tests: B201,B301,B401
